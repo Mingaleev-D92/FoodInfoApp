@@ -9,9 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.foodinfoapp.R
+import com.example.foodinfoapp.adapters.MostPopularAdapter
 import com.example.foodinfoapp.databinding.FragmentHomeBinding
+import com.example.foodinfoapp.models.CategoryMeals
 import com.example.foodinfoapp.models.Meal
 import com.example.foodinfoapp.models.MealList
 import com.example.foodinfoapp.retrofit.RetrofitInstance
@@ -29,6 +32,8 @@ class HomeFragment : Fragment() {
     private lateinit var homeMvvm: HomeViewModel
     private lateinit var randomMeal: Meal
 
+    private lateinit var popularItemsAdapter: MostPopularAdapter
+
     // ключи для интента
     companion object{
         const val MEAL_ID = "com.example.foodapp.fragments.idMeal"
@@ -41,6 +46,8 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         // инициализация
         homeMvvm = ViewModelProvider(this)[HomeViewModel::class.java]
+
+        popularItemsAdapter = MostPopularAdapter()
     }
 
     override fun onCreateView(
@@ -61,6 +68,40 @@ class HomeFragment : Fragment() {
         // прослушиватель клика
         onRandomMealClick()
 
+        // получения популярных товаров для листа
+        homeMvvm.getPopularItems()
+        // устанавливаем список
+        observePopularItemsLiveData()
+        // представление ресайклера
+        preparePopularItemsRecyclerView()
+        // нажатие на популярный элемент
+        onPopularItemClick()
+
+    }
+
+    private fun onPopularItemClick() {
+        popularItemsAdapter.onItemClick = {meal ->
+            val intent = Intent(activity,MealActivity::class.java)
+            intent.putExtra(MEAL_ID,meal.idMeal)
+            intent.putExtra(MEAL_NAME,meal.strMeal)
+            intent.putExtra(MEAL_THUMB,meal.strMealThumb)
+            startActivity(intent)
+        }
+    }
+
+    private fun preparePopularItemsRecyclerView() {
+        binding.recViewMealsPopular.apply {
+            layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
+            adapter = popularItemsAdapter
+        }
+    }
+
+    private fun observePopularItemsLiveData() {
+        homeMvvm.observePopularItemsLiveData().observe(viewLifecycleOwner
+        ) { mealList ->
+            popularItemsAdapter.setMeals(
+                mealsList = mealList as ArrayList<CategoryMeals>)
+        }
     }
 
     private fun onRandomMealClick() {
