@@ -53,5 +53,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
 
     // Android Components
-    implementation "com.google.android.material:material:1.6.1"
+    implementation 'com.google.android.material:material:1.6.1'
+    //gif
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.24'
 }
