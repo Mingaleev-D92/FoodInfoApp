@@ -16,6 +16,7 @@ import com.example.foodinfoapp.adapters.MostPopularAdapter
 import com.example.foodinfoapp.databinding.FragmentHomeBinding
 import com.example.foodinfoapp.models.Meal
 import com.example.foodinfoapp.models.MealsByCategory
+import com.example.foodinfoapp.ui.activity.CategoryMealsActivity
 import com.example.foodinfoapp.ui.activity.MealActivity
 import com.example.foodinfoapp.viewModel.HomeViewModel
 
@@ -36,6 +37,8 @@ class HomeFragment : Fragment() {
         const val MEAL_ID = "com.example.foodapp.fragments.idMeal"
         const val MEAL_NAME = "com.example.foodapp.fragments.nameMeal"
         const val MEAL_THUMB = "com.example.foodapp.fragments.thumbMeal"
+
+        const val CATEGORY_NAME = "com.example.foodapp.fragments.categoryName"
 
     }
 
@@ -78,6 +81,17 @@ class HomeFragment : Fragment() {
         homeMvvm.getCategories()
         observeCategoriesLiveData()
 
+        onCategoryClick()
+
+    }
+
+    private fun onCategoryClick() {
+        categoriesAdapter.onItemClick = {category ->
+            val intent = Intent(activity, CategoryMealsActivity::class.java)
+            intent.putExtra(CATEGORY_NAME,category.strCategory)
+            startActivity(intent)
+
+        }
     }
 
     private fun observeCategoriesLiveData() {
