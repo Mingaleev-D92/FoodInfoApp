@@ -2,6 +2,7 @@ package com.example.foodinfoapp.retrofit
 
 import com.example.foodinfoapp.models.CategoryList
 import com.example.foodinfoapp.models.MealList
+import com.example.foodinfoapp.models.MealsByCategoryList
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -20,5 +21,9 @@ interface MealApi {
 
     // список товаров
     @GET("filter.php?")
-    fun getPopularItems(@Query("c") categoryName:String):Call<CategoryList>
+    fun getPopularItems(@Query("c") categoryName:String):Call<MealsByCategoryList>
+
+    // список категорий
+    @GET("categories.php")
+    fun getCategories(): Call<CategoryList>
 }
